@@ -21,6 +21,16 @@ module Api
             render json: { errors: enrollment.errors.full_messages }, status: :unprocessable_entity
           end
         end
+
+        def destroy
+            enrollment = Enrollment.find(params[:id])
+
+            if enrollment.destroy
+                render json: { message: "Enrollment deleted successfully" }, status: :ok
+            else
+                render json: { errors: enrollment.errors.full_messages }, status: :unprocessable_entity 
+            end
+        end
   
         private
   
