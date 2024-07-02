@@ -18,6 +18,22 @@ module Api
 
                 render json: { page: page, items: formatted_student }, status: :ok
             end
+
+            def create
+                student = Student.new(student_params)
+
+                if student.save
+                    render json: { id: student.id }, status: :ok
+                else
+                    render json: { errors: student.errors.full_messages }, status: :unprocessable_entity
+                end
+            end
+
+            private
+
+            def student_params
+                params.require(:student).permit(:name, :cpf, :birthdate, :payment_method)
+            end
         end
     end
 end

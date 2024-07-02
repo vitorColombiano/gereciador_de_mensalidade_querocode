@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   namespace :api do
 	  namespace :v1 do
-		resources :students, only: [:index]
+		resources :students, only: [:index, :create]
 	  end
 	end
 end
