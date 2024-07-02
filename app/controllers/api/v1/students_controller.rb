@@ -29,6 +29,17 @@ module Api
                 end
             end
 
+            def update
+                student = Student.find(params[:id])
+
+                if student.update(payment_method_params)
+                    render json: { id: student.id, payment_method: student.payment_method, name: student.name }, status: :ok
+                else
+                    render json: { errors: student.errors.full_messages }, status: :unprocessable_entity 
+                end
+
+            end
+
             def destroy
                 student = Student.find(params[:id])
 
@@ -43,6 +54,10 @@ module Api
 
             def student_params
                 params.require(:student).permit(:name, :cpf, :birthdate, :payment_method)
+            end
+
+            def payment_method_params
+                params.require(:student).permit(:payment_method)
             end
         end
     end
