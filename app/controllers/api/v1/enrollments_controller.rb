@@ -1,6 +1,11 @@
 module Api
     module V1
       class EnrollmentsController < ApplicationController
+
+        include ActionController::HttpAuthentication::Basic::ControllerMethods
+
+        before_action :authenticate, only: [:index, :create, :destroy]
+
         def index
           page = params[:page].to_i > 0 ? params[:page].to_i : 1
           count = params[:count].to_i > 0 ? params[:count].to_i : 10
@@ -33,6 +38,12 @@ module Api
         end
   
         private
+
+        def authenticate
+            authenticate_or_request_with_http_basic do |username, password|
+              username == 'admin_ops' && password == 'billing'
+            end
+        end
   
         def enrollment_params
           params.require(:enrollment).permit(:amount, :installments, :due_day, :student_id)
