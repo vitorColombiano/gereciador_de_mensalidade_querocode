@@ -29,6 +29,16 @@ module Api
                 end
             end
 
+            def destroy
+                student = Student.find(params[:id])
+
+                if student.destroy
+                    render json: { message: "Student deleted successfully" }, status: :ok
+                else
+                    render json: { errors: student.errors.full_messages }, status: :unprocessable_entity 
+                end
+            end
+
             private
 
             def student_params
