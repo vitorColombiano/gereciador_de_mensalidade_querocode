@@ -15,26 +15,28 @@ module Api
           
           render json: { page: page, items: formatted_enrollment }, status: :ok
         end
-  
+
         def create
-          enrollment = Enrollment.new(enrollment_params)
-  
-          if enrollment.save
-            create_bills(enrollment)
-            render json: enrollment_json(enrollment), status: :created
-          else
-            render json: { errors: enrollment.errors.full_messages }, status: :unprocessable_entity
+          begin
+            enrollment = Enrollment.new(enrollment_params)
+            if enrollment.save
+              create_bills(enrollment)
+              render json: enrollment_json(enrollment), status: :created
+            end
+          rescue ActiveRecord::RecordInvalid => e
+            render json: { errors: e.message }, status: :unprocessable_entity
           end
         end
 
         def destroy
+          begin
             enrollment = Enrollment.find(params[:id])
-
             if enrollment.destroy
                 render json: { message: "Enrollment deleted successfully" }, status: :ok
-            else
-                render json: { errors: enrollment.errors.full_messages }, status: :unprocessable_entity 
             end
+          rescue ActiveRecord::RecordNotFound => e
+            render json: { errors: e.message }, status: :not_found
+          end
         end
   
         private
